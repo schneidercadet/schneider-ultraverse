@@ -2,6 +2,33 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import collectionsData from "../../api/api.json";
 import Carousel from "../shared/Carousel";
+import Skeleton from "../UI/Skeleton";
+
+const HotCollectionSkeleton = () => (
+  <div className="skeleton-slide">
+    <Skeleton type="image" className="skeleton-image" />
+    <Skeleton
+      type="avatar"
+      className="skeleton-circle"
+      style={{
+        marginTop: "-20px",
+        position: "relative",
+        zIndex: 1,
+        border: "2px solid white",
+      }}
+    />
+    <Skeleton
+      type="title"
+      className="skeleton-title"
+      style={{ marginTop: "10px" }}
+    />
+    <Skeleton
+      type="subtitle"
+      className="skeleton-subtitle"
+      style={{ marginTop: "8px" }}
+    />
+  </div>
+);
 
 const HotCollections = () => {
   const [collections, setCollections] = useState([]);
@@ -20,7 +47,7 @@ const HotCollections = () => {
               <div className="small-border bg-color-2"></div>
             </div>
           </div>
-          <Carousel>
+          <Carousel skeletonItem={HotCollectionSkeleton}>
             {collections.map((collection, index) => (
               <div
                 className="col-lg-3 col-md-6 col-sm-6 col-xs-12"
