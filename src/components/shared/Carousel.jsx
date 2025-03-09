@@ -33,6 +33,7 @@ const DefaultSkeleton = () => (
 const Carousel = ({ children, skeletonItem }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
+  const [sliderInstance, setSliderInstance] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -82,17 +83,15 @@ const Carousel = ({ children, skeletonItem }) => {
     slideChanged(slider) {
       setCurrentSlide(slider.track.details.rel);
     },
-    created() {
+    created(slider) {
       console.log("Keen Slider created");
       setLoaded(true);
+      setSliderInstance(slider);
     },
   });
 
-  const isLastSlide =
-    loaded &&
-    instanceRef.current?.track?.details?.slides?.length > 0 &&
-    currentSlide === instanceRef.current.track.details.slides.length - 1;
-
+  const isLastSlide = loaded && sliderInstance && 
+    currentSlide === sliderInstance.track.details.slides.length - 1;
   const isFirstSlide = currentSlide === 0;
 
   const SkeletonComponent = skeletonItem || DefaultSkeleton;
@@ -122,20 +121,16 @@ const Carousel = ({ children, skeletonItem }) => {
             ))}
           </div>
 
-          {instanceRef.current && (
-            <>
-              <Arrow
-                left
-                onClick={(e) => e.stopPropagation() || instanceRef.current?.prev()}
-                disabled={isFirstSlide}
-              />
+          <Arrow
+            left
+            onClick={(e) => e.stopPropagation() || instanceRef.current?.prev()}
+            disabled={isFirstSlide}
+          />
 
-              <Arrow
-                onClick={(e) => e.stopPropagation() || instanceRef.current?.next()}
-                disabled={isLastSlide}
-              />
-            </>
-          )}
+          <Arrow
+            onClick={(e) => e.stopPropagation() || instanceRef.current?.next()}
+            disabled={isLastSlide}
+          />
         </>
       )}
     </div>
@@ -159,14 +154,14 @@ function Arrow(props) {
         transform: "translateY(-50%)",
         left: props.left ? "5px" : "auto",
         right: props.left ? "auto" : "5px",
-        height: "30px",
-        width: "30px",
+        height: "40px", 
+        width: "40px", 
         cursor: props.disabled ? "default" : "pointer",
         zIndex: 10,
         fill: props.disabled ? "#ccc" : "#000",
         background: "rgb(255, 255, 255)",
         borderRadius: "50%",
-        padding: "5px",
+        padding: "8px", 
         opacity: props.disabled ? 0.5 : 1,
       }}
     >
