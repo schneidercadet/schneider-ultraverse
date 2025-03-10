@@ -1,6 +1,6 @@
 .keen-slider {
   display: flex;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .keen-slider__slide {
@@ -9,7 +9,7 @@
   max-height: none !important;
   flex: 0 0 auto;
   box-sizing: border-box;
-  padding: 10px;
+  padding: 0 5px;
   width: 100%;
 }
 
@@ -25,7 +25,7 @@
 }
 
 .keen-slider__slide .nft_wrap {
-  height: 200px !important;
+  height: 200px !important; 
   position: relative;
   overflow: hidden;
   width: 100% !important;
@@ -184,92 +184,47 @@
   border-radius: 3px;
 }
 
-.slider-container {
-  position: relative;
-  padding: 20px;
-  margin-top: -20px;
-  margin-bottom: -20px;
-  margin-left: 0px;
-  margin-right: 0px;
-}
-
-.slider-container::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
+/* Enhanced Arrow Styling */
 .arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
+  cursor: pointer;
+  display: block;
   width: 40px;
   height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: white;
   border-radius: 50%;
-  background-color: #fff;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.arrow:hover {
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .arrow--left {
   left: 10px;
-  z-index: 20;
 }
 
 .arrow--right {
   right: 10px;
-  z-index: 20;
 }
 
 .arrow--disabled {
-  opacity: 0.5;
   cursor: default;
+  opacity: 0.5;
 }
 
-.arrow:hover:not(.arrow--disabled) {
-  background-color: #f8f8f8;
+.arrow--disabled:hover {
+  transform: translateY(-50%);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-@media (max-width: 576px) {
-  .arrow--left {
-    left: 5px;
-  }
-
-  .arrow--right {
-    right: 5px;
-  }
-
-  .arrow {
-    width: 35px;
-    height: 35px;
-  }
-}
-
-.dots {
-  display: flex;
-  justify-content: center;
-  margin-top: 25px;
-}
-
-.nft__item {
-  transition: all 0.3s ease;
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
-}
-
-.nft__item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.15);
+.slider-container {
+  position: relative;
 }
 
 @keyframes shimmer {
@@ -285,7 +240,7 @@
   .keen-slider__slide {
     padding: 0 4px;
   }
-
+  
   .skeleton-slider .keen-slider__slide {
     flex: 0 0 33.33%;
     max-width: 33.33%;
@@ -318,7 +273,7 @@
   .keen-slider__slide .nft_coll {
     margin: 0 auto;
   }
-
+  
   .skeleton-slider .keen-slider__slide {
     flex: 0 0 50%;
     max-width: 50%;
@@ -334,7 +289,7 @@
     margin: 0 auto;
     max-width: 90%;
   }
-
+  
   .skeleton-slider .keen-slider__slide {
     flex: 0 0 50%;
     max-width: 50%;
@@ -345,22 +300,16 @@
 @media (max-width: 479px) {
   .keen-slider__slide {
     padding: 0;
-    display: flex;
-    justify-content: center;
-  }
-  .keen-slider__slide > div {
-    max-width: 300px;
-    margin: 0 auto;
   }
   .keen-slider__slide .nft_coll {
     margin: 0 auto;
     max-width: 90%;
   }
-
+  
   .skeleton-slider .keen-slider__slide:not(:first-child) {
     display: none;
   }
-
+  
   .skeleton-slider .keen-slider__slide:first-child {
     flex: 0 0 100%;
     max-width: 100%;

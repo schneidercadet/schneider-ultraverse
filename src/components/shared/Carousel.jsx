@@ -49,31 +49,31 @@ const Carousel = ({ children, skeletonItem }) => {
   const [sliderRef, instanceRef] = useKeenSlider({
     slides: {
       perView: 4,
-      spacing: 15,
+      spacing: 8,
     },
     breakpoints: {
       "(min-width: 1400px)": {
-        slides: { perView: 4, spacing: 20 },
+        slides: { perView: 4, spacing: 10 },
       },
 
       "(min-width: 1200px) and (max-width: 1399px)": {
-        slides: { perView: 4, spacing: 15 },
+        slides: { perView: 4, spacing: 8 },
       },
 
       "(min-width: 992px) and (max-width: 1199px)": {
-        slides: { perView: 3, spacing: 15 },
+        slides: { perView: 3, spacing: 8 },
       },
 
       "(min-width: 768px) and (max-width: 991px)": {
-        slides: { perView: 2, spacing: 15 },
+        slides: { perView: 3, spacing: 6 },
       },
 
       "(min-width: 576px) and (max-width: 767px)": {
-        slides: { perView: 2, spacing: 10 },
+        slides: { perView: 2, spacing: 4 },
       },
 
       "(min-width: 480px) and (max-width: 575px)": {
-        slides: { perView: 1, spacing: 0 },
+        slides: { perView: 2, spacing: 3 },
       },
 
       "(max-width: 479px)": {
