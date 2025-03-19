@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Skeleton from "../UI/Skeleton";
 import newItemData from "../../api/newItemApi.json";
+import authorData from "../../api/authorApi.json";
 import Carousel from "../shared/Carousel";
 
 const NewItemSkeleton = () => (
@@ -53,7 +54,19 @@ const NewItems = () => {
   useEffect(() => {
     const initialTime = new Date().getTime();
     setStartTime(initialTime);
-    setItems(newItemData);
+    
+    const mappedItems = newItemData.map(item => {
+      const authorMatch = authorData.find(author => {
+        return author.authorId === item.authorId;
+      });
+      
+      return {
+        ...item,
+        mappedAuthorId: authorMatch ? authorMatch.id : null
+      };
+    });
+    
+    setItems(mappedItems);
   }, []);
 
   useEffect(() => {
@@ -109,7 +122,7 @@ const NewItems = () => {
               <div className="nft__item" key={item.id}>
                 <div className="author_list_pp">
                   <Link
-                    to="/author"
+                    to={`/author/${item.mappedAuthorId || item.authorId}`}
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title={`Creator: ${item.authorId}`}
@@ -130,13 +143,13 @@ const NewItems = () => {
                       <button>Buy Now</button>
                       <div className="nft__item_share">
                         <h4>Share</h4>
-                        <a href="" target="_blank" rel="noreferrer">
+                        <a href="https://facebook.com" target="_blank" rel="noreferrer">
                           <i className="fa fa-facebook fa-lg"></i>
                         </a>
-                        <a href="" target="_blank" rel="noreferrer">
+                        <a href="https://twitter.com" target="_blank" rel="noreferrer">
                           <i className="fa fa-twitter fa-lg"></i>
                         </a>
-                        <a href="">
+                        <a href="mailto:?subject=Check out this NFT" target="_blank" rel="noreferrer">
                           <i className="fa fa-envelope fa-lg"></i>
                         </a>
                       </div>
