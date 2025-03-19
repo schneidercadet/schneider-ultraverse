@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import collectionsData from "../../api/api.json";
+import authorData from "../../api/authorApi.json";
 import Carousel from "../shared/Carousel";
 import Skeleton from "../UI/Skeleton";
 
@@ -34,7 +35,18 @@ const HotCollections = () => {
   const [collections, setCollections] = useState([]);
 
   useEffect(() => {
-    setCollections(collectionsData.slice(0, 6));
+    const mappedCollections = collectionsData.slice(0, 6).map(collection => {
+      const authorMatch = authorData.find(author => {
+        return author.authorId === collection.authorId;
+      });
+      
+      return {
+        ...collection,
+        mappedAuthorId: authorMatch ? authorMatch.id : null
+      };
+    });
+    
+    setCollections(mappedCollections);
   }, []);
 
   return (
@@ -64,7 +76,7 @@ const HotCollections = () => {
                     </Link>
                   </div>
                   <div className="nft_coll_pp">
-                    <Link to="/author">
+                    <Link to={`/author/${collection.mappedAuthorId || collection.authorId}`}>
                       <img
                         className="lazy pp-coll"
                         src={collection.authorImage}

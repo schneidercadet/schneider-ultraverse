@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import AuthorImage from "../../images/author_thumbnail.jpg";
 import topSellersData from "../../api/topSellers.json";
+import authorData from "../../api/authorApi.json";
 import Skeleton from "../UI/Skeleton";
 
 const TopSellerSkeleton = () => (
@@ -38,7 +39,18 @@ const TopSellers = () => {
   useEffect(() => {
     const fetchTopSellers = async () => {
       try {
-        setTopSellers(topSellersData);
+        const sellers = topSellersData.map(seller => {
+          const authorMatch = authorData.find(author => 
+            author.authorName === seller.authorName
+          );
+          
+          return {
+            ...seller,
+            mappedAuthorId: authorMatch ? authorMatch.id : null
+          };
+        });
+        
+        setTopSellers(sellers);
         setLoading(false);
       } catch (error) {
         console.error("Error loading top sellers data:", error);
@@ -73,7 +85,7 @@ const TopSellers = () => {
                 topSellers.map((seller) => (
                   <li key={seller.id}>
                     <div className="author_list_pp">
-                      <Link to={`/author/${seller.authorId}`}>
+                      <Link to={`/author/${seller.mappedAuthorId || seller.authorId}`}>
                         <img
                           className="lazy pp-author"
                           src={seller.authorImage || AuthorImage}
@@ -83,7 +95,7 @@ const TopSellers = () => {
                       </Link>
                     </div>
                     <div className="author_list_info">
-                      <Link to={`/author/${seller.authorId}`}>{seller.authorName}</Link>
+                      <Link to={`/author/${seller.mappedAuthorId || seller.authorId}`}>{seller.authorName}</Link>
                       <span>{seller.price} ETH</span>
                     </div>
                   </li>
