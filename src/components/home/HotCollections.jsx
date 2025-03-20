@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import collectionsData from "../../api/api.json";
 import authorData from "../../api/authorApi.json";
+import itemsData from "../../api/itemsDetailsApi.json";
 import Carousel from "../shared/Carousel";
 import Skeleton from "../UI/Skeleton";
 
@@ -35,17 +36,57 @@ const HotCollections = () => {
   const [collections, setCollections] = useState([]);
 
   useEffect(() => {
-    const mappedCollections = collectionsData.slice(0, 6).map(collection => {
-      const authorMatch = authorData.find(author => {
+    const collectionItemsMap = itemsData.reduce((acc, item) => {
+      const matchingCollection = collectionsData.find(
+        collection => 
+          item.title.toLowerCase().includes(collection.title.toLowerCase()) ||
+          collection.title.toLowerCase().includes(item.title.toLowerCase()) ||
+          (item.title.split(" ").some(word => 
+            collection.title.toLowerCase().includes(word.toLowerCase()) && 
+            word.length > 3))
+      );
+      
+      if (matchingCollection) {
+        acc[matchingCollection.title] = item.id;
+      }
+      return acc;
+    }, {});
+
+    const mappedCollections = collectionsData.slice(0, 6).map((collection) => {
+      const authorMatch = authorData.find((author) => {
         return author.authorId === collection.authorId;
       });
-      
+
+      if (collectionItemsMap[collection.title]) {
+        return {
+          ...collection,
+          mappedAuthorId: authorMatch ? authorMatch.id : null,
+          relatedItemId: collectionItemsMap[collection.title],
+        };
+      }
+
+      const relatedItem = itemsData.find((item) => {
+        return (
+          item.ownerId === collection.authorId ||
+          item.creatorId === collection.authorId
+        );
+      });
+
+      const similarNameItem = !relatedItem ? itemsData.find(item => {
+        const collectionWords = collection.title.toLowerCase().split(" ");
+        const itemWords = item.title.toLowerCase().split(" ");
+        return collectionWords.some(word => 
+          itemWords.includes(word) && word.length > 3
+        );
+      }) : null;
+
       return {
         ...collection,
-        mappedAuthorId: authorMatch ? authorMatch.id : null
+        mappedAuthorId: authorMatch ? authorMatch.id : null,
+        relatedItemId: relatedItem ? relatedItem.id : (similarNameItem ? similarNameItem.id : null),
       };
     });
-    
+
     setCollections(mappedCollections);
   }, []);
 
@@ -67,7 +108,9 @@ const HotCollections = () => {
               >
                 <div className="nft_coll">
                   <div className="nft_wrap">
-                    <Link to="/item-details">
+                    <Link
+                      to={`/item-details/${collection.relatedItemId || collection.id}`}
+                    >
                       <img
                         src={collection.nftImage}
                         className="lazy img-fluid"
@@ -76,7 +119,9 @@ const HotCollections = () => {
                     </Link>
                   </div>
                   <div className="nft_coll_pp">
-                    <Link to={`/author/${collection.mappedAuthorId || collection.authorId}`}>
+                    <Link
+                      to={`/author/${collection.mappedAuthorId || collection.authorId}`}
+                    >
                       <img
                         className="lazy pp-coll"
                         src={collection.authorImage}
@@ -86,7 +131,7 @@ const HotCollections = () => {
                     <i className="fa fa-check"></i>
                   </div>
                   <div className="nft_coll_info">
-                    <Link to="/explore">
+                    <Link to={`/item-details/${collection.relatedItemId || collection.id}`}>
                       <h4>{collection.title}</h4>
                     </Link>
                     <span>ERC-{collection.code}</span>
