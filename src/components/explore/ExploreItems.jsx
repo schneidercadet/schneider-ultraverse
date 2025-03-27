@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import AuthorImage from "../../images/author_thumbnail.jpg";
 import Skeleton from "../UI/Skeleton";
 import exploreItemData from "../../api/exploreApi.json";
+import authorData from "../../api/authorApi.json";
+import itemsData from "../../api/itemsDetailsApi.json";
 
 const ExploreItemSkeleton = () => (
   <div className="nft__item">
@@ -55,8 +57,26 @@ const ExploreItems = () => {
     setLoading(true);
     
     const timer = setTimeout(() => {
-      setItems(exploreItemData);
-      setFilteredItems(exploreItemData);
+      const mappedItems = exploreItemData.map(item => {
+        const matchedAuthor = authorData.find(
+          author => author.authorId === item.authorId
+        );
+        
+        const matchedItem = itemsData.find(
+          detailItem => 
+            detailItem.title === item.title ||
+            detailItem.nftId === item.id
+        );
+        
+        return {
+          ...item,
+          mappedAuthorId: matchedAuthor ? matchedAuthor.id : item.authorId,
+          itemDetailsId: matchedItem ? matchedItem.id : item.id
+        };
+      });
+      
+      setItems(mappedItems);
+      setFilteredItems(mappedItems);
       setLoading(false);
     }, 500);
     
@@ -177,10 +197,10 @@ const ExploreItems = () => {
                 <div className="nft__item">
                   <div className="author_list_pp">
                     <Link
-                      to={`/author/${item.authorId}`}
+                      to={`/author/${item.mappedAuthorId || item.authorId}`}
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={`Creator: ${item.authorId}`}
+                      title={`Creator: ${item.authorName}`}
                     >
                       <img
                         className="lazy"
@@ -203,19 +223,19 @@ const ExploreItems = () => {
                         <button>Buy Now</button>
                         <div className="nft__item_share">
                           <h4>Share</h4>
-                          <a href="" target="_blank" rel="noreferrer">
+                          <a href="https://facebook.com" target="_blank" rel="noreferrer">
                             <i className="fa fa-facebook fa-lg"></i>
                           </a>
-                          <a href="" target="_blank" rel="noreferrer">
+                          <a href="https://twitter.com" target="_blank" rel="noreferrer">
                             <i className="fa fa-twitter fa-lg"></i>
                           </a>
-                          <a href="">
+                          <a href="mailto:?subject=Check out this NFT&body=I found this amazing NFT on our platform">
                             <i className="fa fa-envelope fa-lg"></i>
                           </a>
                         </div>
                       </div>
                     </div>
-                    <Link to={`/item-details/${item.id}`}>
+                    <Link to={`/item-details/${item.itemDetailsId || item.id}`}>
                       <img
                         src={item.nftImage}
                         className="lazy nft__item_preview"
@@ -224,7 +244,7 @@ const ExploreItems = () => {
                     </Link>
                   </div>
                   <div className="nft__item_info">
-                    <Link to={`/item-details/${item.id}`}>
+                    <Link to={`/item-details/${item.itemDetailsId || item.id}`}>
                       <h4>{item.title}</h4>
                     </Link>
                     <div className="nft__item_price">{item.price} ETH</div>

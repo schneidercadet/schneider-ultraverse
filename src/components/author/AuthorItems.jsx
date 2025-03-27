@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import AuthorImage from "../../images/author_thumbnail.jpg";
 import Skeleton from "../UI/Skeleton";
 import authorData from "../../api/authorApi.json";
+import itemsData from "../../api/itemsDetailsApi.json";
 
 const AuthorItemSkeleton = () => (
   <div className="nft__item">
@@ -50,8 +51,21 @@ const AuthorItems = () => {
         
         if (author) {
           const { nftCollection, ...authorDetails } = author;
+          const mappedCollection = nftCollection.map(item => {
+            const matchedItem = itemsData.find(
+              detailItem => 
+                detailItem.title === item.title ||
+                detailItem.nftId === item.nftId
+            );
+            
+            return {
+              ...item,
+              itemDetailsId: matchedItem ? matchedItem.id : item.id
+            };
+          });
+          
           setAuthorInfo(authorDetails);
-          setNftItems(nftCollection || []);
+          setNftItems(mappedCollection || []);
         } else {
           console.error(`Author with ID ${targetAuthorId} not found`);
           setAuthorInfo({});
@@ -108,19 +122,19 @@ const AuthorItems = () => {
                           <button>Buy Now</button>
                           <div className="nft__item_share">
                             <h4>Share</h4>
-                            <a href="" target="_blank" rel="noreferrer">
+                            <a href="https://facebook.com" target="_blank" rel="noreferrer">
                               <i className="fa fa-facebook fa-lg"></i>
                             </a>
-                            <a href="" target="_blank" rel="noreferrer">
+                            <a href="https://twitter.com" target="_blank" rel="noreferrer">
                               <i className="fa fa-twitter fa-lg"></i>
                             </a>
-                            <a href="">
+                            <a href="mailto:?subject=Check out this NFT&body=I found this amazing NFT on our platform">
                               <i className="fa fa-envelope fa-lg"></i>
                             </a>
                           </div>
                         </div>
                       </div>
-                      <Link to={`/item-details/${item.nftId}`}>
+                      <Link to={`/item-details/${item.itemDetailsId || item.id}`}>
                         <img
                           src={item.nftImage}
                           className="lazy nft__item_preview"
@@ -129,7 +143,7 @@ const AuthorItems = () => {
                       </Link>
                     </div>
                     <div className="nft__item_info">
-                      <Link to={`/item-details/${item.nftId}`}>
+                      <Link to={`/item-details/${item.itemDetailsId || item.id}`}>
                         <h4>{item.title}</h4>
                       </Link>
                       <div className="nft__item_price">{item.price} ETH</div>
